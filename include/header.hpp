@@ -58,15 +58,18 @@ public:
     ~Hasher();
 
     void static signal_catch(int signum){
-        std::ofstream file;
-        file.open("hash_hex_log.json", std::ios_base::app);
+        std::ofstream output_file;
+        std::ifstream input_file;
+        output_file.open("hash_hex_log.json");
+        input_file.open("hash_hex_log.json");
         json out_json;
+        if(input_file.peek() != EOF)
+            input_file >> out_json;
         for(auto & right_hash : right_hashs) {
             out_json["values"].push_back(right_hash);
         }
-        file << out_json.dump(4);
-        file << "\n\n";
-        file.close();
+        output_file << out_json.dump(4);
+        output_file.close();
         sleep(1);
         std::cout << "\nProgram aborted with code " << --signum << "\n";
         exit(signum);
