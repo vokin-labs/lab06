@@ -58,10 +58,17 @@ public:
     ~Hasher();
 
     void static signal_catch(int signum){
+        write_to_json_file("hash_hex_log.json");
+        sleep(1);
+        std::cout << "\nProgram aborted with code " << --signum << "\n";
+        exit(signum);
+    }
+
+    void static write_to_json_file(const string& file_name){
         std::ofstream output_file;
         std::ifstream input_file;
-        output_file.open("hash_hex_log.json");
-        input_file.open("hash_hex_log.json");
+        output_file.open(file_name);
+        input_file.open(file_name);
         json out_json;
         if(input_file.peek() != EOF)
             input_file >> out_json;
@@ -70,10 +77,7 @@ public:
         }
         output_file << out_json.dump(4);
         output_file.close();
-        sleep(1);
-        std::cout << "\nProgram aborted with code " << --signum << "\n";
-        exit(signum);
-    }
+    };
 
     void start(const bool& key);
 
